@@ -27,41 +27,54 @@ const router = createBrowserRouter([
     {
         path: "/dashboard",
         element: <DashboardPage/>,
-        errorElement: <Error404Page/>,
+        errorElement: <Error404Page/>
     },
     {
         path: "/files",
-        element: <DashboardPage/>
+        element: <DashboardPage/>,
+        errorElement: <Error404Page/>
     },
     {
         path: "/customers",
-        element: <DashboardPage/>
+        element: <DashboardPage/>,
+        errorElement: <Error404Page/>
     },
     {
-        path: "/products",
-        element: <DashboardPage/>
+        path: "/emails",
+        element: <DashboardPage/>,
+        errorElement: <Error404Page/>
     },
     {
         path: "/analytics",
-        element: <DashboardPage/>
+        element: <DashboardPage/>,
+        errorElement: <Error404Page/>
     },
     {
         path: "/settings",
-        element: <DashboardPage/>
+        element: <DashboardPage/>,
+        errorElement: <Error404Page/>
     },
     {
         path: "/profile",
-        element: <DashboardPage/>
+        element: <DashboardPage/>,
+        errorElement: <Error404Page/>
     },
     {
         path: "/upload",
-        element: <DashboardPage/>
+        element: <DashboardPage/>,
+        errorElement: <Error404Page/>
+    },
+    {
+        path: "/compose",
+        element: <DashboardPage/>,
+        errorElement: <Error404Page/>
     },
     {
         path: "/test",
         element: <TestPage/>
     },
 ]);
+// setInterval(() => console.clear(), 5000);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>

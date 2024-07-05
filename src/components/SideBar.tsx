@@ -1,11 +1,17 @@
-import {Home, LineChart, Package, Settings, Users2} from "lucide-react";
+import {Home, LineChart, Settings, Users2} from "lucide-react";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip.tsx";
-import {useState} from "react";
-import {Link} from "react-router-dom";
+import {useEffect, useState} from "react";
+import {Link, useLocation} from "react-router-dom";
 import {LuFileText} from "react-icons/lu";
+import {MdOutlineEmail} from "react-icons/md";
 
 const SideBar = (props: { handleActiveItem?: (itemId: string) => void }) => {
     const [activeItemId, setActiveItemId] = useState<string | null>("dashboard");
+    const location = useLocation();
+
+    useEffect(() => {
+        setActiveItemId(location.pathname.substring(1));
+    }, [location]);
 
     const handleClick = (itemId: string) => {
         setActiveItemId(itemId);
@@ -43,7 +49,7 @@ const SideBar = (props: { handleActiveItem?: (itemId: string) => void }) => {
                             <Link
                                 to="/files" onClick={() => handleClick("files")}
                                 className={`flex h-9 w-9 items-center justify-center rounded-lg  ${
-                                    activeItemId === 'files' ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'
+                                    activeItemId === 'files' || activeItemId === 'upload' ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'
                                 } transition-colors hover:text-foreground md:h-8 md:w-8`}
                             >
                                 <LuFileText className="h-5 w-5"/>
@@ -55,16 +61,16 @@ const SideBar = (props: { handleActiveItem?: (itemId: string) => void }) => {
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Link
-                                to="/products" onClick={() => handleClick("products")}
+                                to="/emails" onClick={() => handleClick("emails")}
                                 className={`flex h-9 w-9 items-center justify-center rounded-lg  ${
-                                    activeItemId === 'products' ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'
+                                    activeItemId === 'emails' || activeItemId === 'compose' ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'
                                 } transition-colors hover:text-foreground md:h-8 md:w-8`}
                             >
-                                <Package className="h-5 w-5"/>
-                                <span className="sr-only">Products</span>
+                                <MdOutlineEmail className="h-5 w-5"/>
+                                <span className="sr-only">Emails</span>
                             </Link>
                         </TooltipTrigger>
-                        <TooltipContent side="right">Products</TooltipContent>
+                        <TooltipContent side="right">Emails</TooltipContent>
                     </Tooltip>
                     <Tooltip>
                         <TooltipTrigger asChild>

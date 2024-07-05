@@ -5,7 +5,7 @@ import SideBar from '@/components/SideBar';
 import {authenticate} from '@/utils/authenticate';
 import DashboardSheet from '@/pages/sheets/DashboardSheet';
 import FilesSheet from '@/pages/sheets/FilesSheet';
-import ProductsSheet from '@/pages/sheets/ProductsSheet';
+import EmailsSheet from '@/pages/sheets/EmailsSheet.tsx';
 import UploadSheet from "@/pages/sheets/UploadSheet.tsx";
 
 const DashboardPage: React.FC = () => {
@@ -38,8 +38,8 @@ const DashboardPage: React.FC = () => {
                 return <DashboardSheet navigateTo={navigateTo}/>;
             case 'files':
                 return <FilesSheet navigateTo={navigateTo}/>;
-            case 'products':
-                return <ProductsSheet/>;
+            case 'emails':
+                return <EmailsSheet navigateTo={navigateTo}/>;
             case 'upload':
                 return <UploadSheet navigateTo={navigateTo}/>;
             case 'customers':

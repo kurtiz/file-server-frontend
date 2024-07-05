@@ -28,6 +28,7 @@ import {useToast} from "@/components/ui/use-toast.ts";
 import axios from "axios";
 import {BASE_URL} from "@/config.ts";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip.tsx";
+import {truncateWord} from "@/utils/common.ts";
 
 const formSchema = z.object({
     title: z.string().min(1, {message: "Title is required!"}),
@@ -55,11 +56,6 @@ const FileCard = (props: {
             description: fileDescription || "",
         },
     });
-
-    const truncateFileName = (name: string, maxLength: number) => {
-        if (name.length <= maxLength) return name;
-        return name.substring(0, maxLength) + "...";
-    };
 
     const {reset, watch, formState} = form;
     const {isDirty, dirtyFields} = formState;
@@ -95,14 +91,13 @@ const FileCard = (props: {
         setIsDisabled(!isDisabled);
     };
 
-    const handleSave = (fileID: string ) => {
+    const handleSave = (fileID: string) => {
         if (isDirty) {
             const updatedData = {
                 title: dirtyFields.title ? watch("title") : fileTitle,
                 description: dirtyFields.description ? watch("description") : fileDescription,
             };
-            axiosUpdateInstance.patch(`${BASE_URL}/admin/file/update/${fileID}`, updatedData).
-            then(response => {
+            axiosUpdateInstance.patch(`${BASE_URL}/admin/file/update/${fileID}`, updatedData).then(response => {
                 if (response.status === 200) {
 
                     toast({description: "File updated successfully!"});
@@ -229,7 +224,7 @@ const FileCard = (props: {
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <div className="truncate">{truncateFileName(fileCardTitle, 15)}</div>
+                            <div className="truncate">{truncateWord(fileCardTitle, 15)}</div>
                         </TooltipTrigger>
                         <TooltipContent>
                             <p>{fileCardTitle}</p>
