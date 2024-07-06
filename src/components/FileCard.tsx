@@ -60,6 +60,7 @@ const FileCard = (props: {
 
     const {reset, watch, formState} = form;
     const {isDirty, dirtyFields} = formState;
+    const [emailCount, setEmailCount] = useState(0);
 
     const [fileCardTitle, setFileCardTitle] = useState(fileTitle);
     useEffect(() => {
@@ -82,6 +83,24 @@ const FileCard = (props: {
             authorization: `Bearer ${sessionStorage.getItem("token")}`,
         },
     });
+
+    const axiosEmailCountInstance = axios.create({
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        },
+    });
+
+    useEffect(() => {
+        axiosEmailCountInstance.get(`${BASE_URL}/admin/files/email/count/${fileID}`).then((response) => {
+            if (response.status === 200) {
+                setEmailCount(response.data.data.count);
+            }
+        }).catch((error) => {
+            console.error("Error fetching email count:", error);
+        });
+    }, []);
 
     const handleView = () => {
         setIsDisabled(true);
@@ -222,6 +241,18 @@ const FileCard = (props: {
                                             <FormControl>
                                                 <Textarea placeholder="description" disabled={isDisabled}
                                                           rows={4} {...field} />
+                                            </FormControl>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    name="email_count"
+                                    render={() => (
+                                        <FormItem className="mt-2">
+                                            <FormLabel>Email Count</FormLabel>
+                                            <FormControl>
+                                                <Input type="text" disabled={true} value={emailCount}/>
                                             </FormControl>
                                             <FormMessage/>
                                         </FormItem>
