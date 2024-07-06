@@ -38,7 +38,6 @@ const OtpVerification = () => {
     }
 
     const onResend = () => {
-        console.log("resend")
         toast({
             description: "Resending OTP code....",
             action: <Loader2 className="mr-2 h-4 w-4 animate-spin"/>,
@@ -67,7 +66,6 @@ const OtpVerification = () => {
                     description: "OTP sent successfully!",
                 });
 
-                console.log(response.data)
             } else {
                 toast({
                     description: response.data.error,
@@ -112,7 +110,7 @@ const OtpVerification = () => {
                     description: "Email verified successfully!",
                 });
 
-                console.log(response.data)
+                
                 sessionStorage.removeItem("email");
 
                 sessionStorage.setItem("name", response.data.data.fullname);

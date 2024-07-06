@@ -38,7 +38,7 @@ const PasswordOtpVerification = () => {
     }
 
     const onResend = () => {
-        console.log("resend")
+        
         toast({
             description: "Resending OTP code....",
             action: <Loader2 className="mr-2 h-4 w-4 animate-spin"/>,
@@ -66,8 +66,7 @@ const PasswordOtpVerification = () => {
                 toast({
                     description: "OTP sent successfully!",
                 });
-
-                console.log(response.data)
+                
             } else {
                 toast({
                     description: response.data.error,

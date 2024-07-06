@@ -120,7 +120,7 @@ const FileCard = (props: {
             description: "Deleting file...",
             action: <Loader2 className="mr-2 h-4 w-4 animate-spin"/>,
         })
-        console.log(fileData);
+
         axiosDeleteInstance.delete(`${BASE_URL}/admin/file/delete/${fileData.fileID}`)
             .then((response) => {
                 if (response.status === 200) {

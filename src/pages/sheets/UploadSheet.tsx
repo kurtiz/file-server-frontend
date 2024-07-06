@@ -45,7 +45,6 @@ const UploadSheet: React.FC<{ navigateTo: (page: string) => void }> = ({navigate
         formData.append("description", data.description);
         formData.append("file", data.file[0]);
 
-        console.log('formData', formData);
 
         const axiosInstance = axios.create({
             headers: {
@@ -54,8 +53,7 @@ const UploadSheet: React.FC<{ navigateTo: (page: string) => void }> = ({navigate
             },
         });
         try {
-            const response = await axiosInstance.post(`${BASE_URL}/admin/file/upload/aws`, formData);
-            console.log(response.data);
+            await axiosInstance.post(`${BASE_URL}/admin/file/upload/aws`, formData);
             toast({
                 title: "File uploaded successfully!",
             });

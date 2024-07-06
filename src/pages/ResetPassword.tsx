@@ -70,8 +70,6 @@ const ResetPassword = () => {
                     toast({
                         description: "Request sent successfully!",
                     });
-                    console.log(response.data);
-
                     sessionStorage.setItem("email", values.email);
                     navigate("/verify-password-reset");
                 } else {

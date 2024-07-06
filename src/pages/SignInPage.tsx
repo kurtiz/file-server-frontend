@@ -76,8 +76,6 @@ const SignInPage = () => {
                 toast({
                     description: "Logged in successfully!",
                 });
-                console.log(response.data)
-
                 if (response.data.data.emailVerified) {
                     setTimeout(() => navigate("/dashboard"), 1500);
                     sessionStorage.removeItem("email");
