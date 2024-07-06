@@ -149,7 +149,8 @@ const EmailsSheet: React.FC<{ navigateTo: (page: string) => void }> = ({navigate
                                         recipient: string,
                                         content: string,
                                         createdAt: string,
-                                        sentBy: { fullname: string, email: string }
+                                        sentByUser: { fullname: string, email: string }
+                                        sentByAdmin: { fullname: string, email: string }
                                     }) => (
 
                                         <>
@@ -157,14 +158,17 @@ const EmailsSheet: React.FC<{ navigateTo: (page: string) => void }> = ({navigate
                                                 <TableCell className="hidden sm:table-cell w-[1%]">
                                                     <Avatar className="h-9 w-9">
                                                         <AvatarImage src="/avatars/01.png" alt="Avatar"/>
-                                                        <AvatarFallback>{row.sentBy.fullname.slice(0, 2).toUpperCase()}</AvatarFallback>
+                                                        <AvatarFallback>{
+                                                            row.sentByUser?.fullname.slice(0, 2).toUpperCase() ||
+                                                            row.sentByAdmin?.fullname.slice(0, 2).toUpperCase()
+                                                        }</AvatarFallback>
                                                     </Avatar>
                                                 </TableCell>
                                                 <TableCell className="font-medium">
-                                                    <p className="text-sm font-medium leading-none lg:ml-8">
-                                                        {row.sentBy.fullname + " "}
+                                                    <p className="text-sm font-medium leading-none">
+                                                        {row.sentByUser?.fullname || row.sentByAdmin?.fullname + " "}
                                                         <span
-                                                            className="text-sm text-muted-foreground">{row.sentBy.email}</span>
+                                                            className="text-sm text-muted-foreground">{row.sentByUser?.email || row.sentByAdmin?.email}</span>
                                                     </p>
                                                 </TableCell>
                                                 <TableCell>
@@ -202,9 +206,13 @@ const EmailsSheet: React.FC<{ navigateTo: (page: string) => void }> = ({navigate
                                                             </DropdownMenuContent>
                                                         </DropdownMenu>
                                                         <DialogContent className="sm:max-w-md">
-                                                            <h2 className="text-xl font-bold">{row.subject}</h2>
+                                                            <p className="text-xl font-bold">{row.subject}
+                                                            <p className="text-sm text-muted-foreground">{row.recipient}</p>
+                                                            </p>
                                                             <p className="mt-2"
-                                                               dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(row.content)}}></p>
+                                                               dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(row.content)}}>
+
+                                                            </p>
                                                         </DialogContent>
                                                     </Dialog>
                                                 </TableCell>

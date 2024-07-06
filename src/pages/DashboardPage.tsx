@@ -7,6 +7,7 @@ import DashboardSheet from '@/pages/sheets/DashboardSheet';
 import FilesSheet from '@/pages/sheets/FilesSheet';
 import EmailsSheet from '@/pages/sheets/EmailsSheet.tsx';
 import UploadSheet from "@/pages/sheets/UploadSheet.tsx";
+import ComposeEmailSheet from "@/pages/sheets/ComposeEmailSheet.tsx";
 
 const DashboardPage: React.FC = () => {
     const navigate = useNavigate();
@@ -42,8 +43,8 @@ const DashboardPage: React.FC = () => {
                 return <EmailsSheet navigateTo={navigateTo}/>;
             case 'upload':
                 return <UploadSheet navigateTo={navigateTo}/>;
-            case 'customers':
-                return <p>Customers content will be displayed here</p>;
+            case 'compose':
+                return <ComposeEmailSheet navigateTo={navigateTo}/>;
             case 'analytics':
                 return <p>Analytics content will be displayed here</p>;
             case 'settings':

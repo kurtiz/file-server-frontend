@@ -201,17 +201,22 @@ const DashboardSheet: React.FC<{ navigateTo: (page: string) => void }> = ({navig
                                 recentEmails.map((row: {
                                     _id: string,
                                     subject: string,
-                                    sentBy: { fullname: string, email: string }
+                                    sentByUser: { fullname: string, email: string }
+                                    sentByAdmin: { fullname: string, email: string }
                                 }) => (
                                     <div key={row._id} className="flex items-center gap-4">
                                         <Avatar className="h-9 w-9">
                                             <AvatarImage src="/avatars/01.png" alt="Avatar"/>
-                                            <AvatarFallback>{row.sentBy.fullname.slice(0, 2).toUpperCase()}</AvatarFallback>
+                                            <AvatarFallback>{
+                                                row.sentByUser?.fullname.slice(0, 2).toUpperCase() ||
+                                                row.sentByAdmin?.fullname.slice(0, 2).toUpperCase()
+                                            }</AvatarFallback>
                                         </Avatar>
                                         <div className="grid gap-1">
                                             <p className="text-sm font-medium leading-none">{row.subject}</p>
                                             <p className="text-sm text-muted-foreground">
-                                                {row.sentBy.fullname} ({row.sentBy.email})
+                                                {row.sentByUser?.fullname || row.sentByAdmin?.fullname}
+                                                ({row.sentByUser?.email || row.sentByAdmin?.email})
                                             </p>
                                         </div>
                                     </div>
