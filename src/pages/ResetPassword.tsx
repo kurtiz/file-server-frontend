@@ -7,38 +7,32 @@ import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, Form
 import {Input} from "@/components/ui/input"
 
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,} from "@/components/ui/card"
-import {LuEye, LuEyeOff} from "react-icons/lu";
 import {useEffect, useState} from "react";
 import {Loader2} from "lucide-react";
 import axios from "axios";
 import {useToast} from "@/components/ui/use-toast.ts";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs.tsx";
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {authenticate} from "@/utils/authenticate.ts";
 import LoadingOverlay from "@/components/LoadingOverlay.tsx";
 import {BASE_URL} from "@/config.ts";
 
 const formSchema = z.object({
-    email: z.string().email({message: "Enter a valid email!"}),
-    password: z.string().min(8, {
-        message: "Password must be at least 8 characters.",
-    }),
+    email: z.string().email({message: "Enter a valid email!"})
 });
 
 
-const SignInPage = () => {
+const ResetPassword = () => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             email: "",
-            password: "",
         },
 
     });
 
     const {toast} = useToast();
-    const [showPassword, setShowPassword] = useState(false);
-    const [signInMethod, setSignInMethod] = useState("admin");
+    const [resetMethod, setResetMethod] = useState("admin");
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
@@ -49,61 +43,52 @@ const SignInPage = () => {
     }, [navigate]);
 
     const handleTabValueChange = (value: string) => {
-        setSignInMethod(value);
+        setResetMethod(value);
     }
 
     const onSubmit = (values: z.infer<typeof formSchema>) => {
         toast({
-            description: "logging in....",
+            description: "Requesting for password reset...",
             action: <Loader2 className="mr-2 h-4 w-4 animate-spin"/>,
         });
 
         setIsLoading(true);
 
         const options = {
-            method: 'POST',
-            url: `${BASE_URL}/${signInMethod}/login`,
-            headers: {'Content-Type': 'application/json'},
+            method: "POST",
+            url: `${BASE_URL}/${resetMethod}/password/reset-initialize`,
+            headers: {"Content-Type": "application/json"},
             data: {
                 email: values.email,
-                password: values.password
-            }
+            },
         };
 
-        axios.request(options).then((response) => {
-            setIsLoading(false);
-            if (response.status === 200) {
-                toast({
-                    description: "Logged in successfully!",
-                });
-                console.log(response.data)
+        axios.request(options)
+            .then((response) => {
+                setIsLoading(false);
+                if (response.status === 200) {
+                    toast({
+                        description: "Request sent successfully!",
+                    });
+                    console.log(response.data);
 
-                if (response.data.data.emailVerified) {
-                    setTimeout(() => navigate("/dashboard"), 1500);
-                    sessionStorage.removeItem("email");
-
-                    sessionStorage.setItem("name", response.data.data.fullname);
-                    sessionStorage.setItem("token", response.data.data.authentication.session.token);
-                    sessionStorage.setItem("user_type", signInMethod);
+                    sessionStorage.setItem("email", values.email);
+                    navigate("/verify-password-reset");
                 } else {
-                    sessionStorage.setItem("email", response.data.data.email);
-                    navigate("/verify");
+                    toast({
+                        description: response.data.error,
+                        variant: "destructive",
+                    });
                 }
-
-            } else {
+            })
+            .catch((error) => {
+                setIsLoading(false);
                 toast({
-                    description: response.data.error,
+                    description: error.response?.data.error || error.message,
                     variant: "destructive",
                 });
-            }
-        }).catch((error) => {
-            setIsLoading(false);
-            toast({
-                description: error.response?.data.error || error.message,
-                variant: "destructive",
             });
-        });
-    }
+    };
 
     return (
         <>
@@ -117,8 +102,8 @@ const SignInPage = () => {
                     <TabsContent value="admin">
                         <Card className="card">
                             <CardHeader>
-                                <CardTitle>Admin Login</CardTitle>
-                                <CardDescription className="text-sm">Access your dashboard here</CardDescription>
+                                <CardTitle>Admin Reset Password</CardTitle>
+                                <CardDescription className="text-sm">Reset your password here</CardDescription>
                             </CardHeader>
                             <CardContent>
                                 <Form {...form}>
@@ -138,32 +123,7 @@ const SignInPage = () => {
                                                 </FormItem>
                                             )}
                                         />
-                                        <FormField
-                                            control={form.control}
-                                            name="password"
-                                            render={({field}) => (
-                                                <FormItem>
-                                                    <FormLabel>Password</FormLabel>
-                                                    <FormControl>
-                                                        <div className="flex w-full max-w-sm items-center space-x-2">
-                                                            <Input type={showPassword ? "text" : "password"}
-                                                                   placeholder="password" {...field} />
-                                                            <Button onClick={() => setShowPassword(!showPassword)}
-                                                                    size="icon"
-                                                                    variant="secondary" type="button">
-                                                                {showPassword ? <LuEye size={20}/> :
-                                                                    <LuEyeOff size={20}/>}
-                                                            </Button>
-                                                        </div>
-                                                    </FormControl>
-                                                    <FormDescription>
-                                                    </FormDescription>
-                                                    <FormMessage/>
-                                                </FormItem>
-                                            )}
-                                        />
                                         <Button className="justify-end" type="submit">Submit</Button>
-                                        <Link to="/reset-password" className="text-sm text-right float-end underline underline-offset-1">Forgot password?</Link>
                                     </form>
                                 </Form>
                             </CardContent>
@@ -178,8 +138,8 @@ const SignInPage = () => {
                     <TabsContent value="user">
                         <Card className="card">
                             <CardHeader>
-                                <CardTitle>User Login</CardTitle>
-                                <CardDescription className="text-sm">Access your dashboard here</CardDescription>
+                                <CardTitle>User Reset Password</CardTitle>
+                                <CardDescription className="text-sm">Reset your password here</CardDescription>
                             </CardHeader>
                             <CardContent>
                                 <Form {...form}>
@@ -199,32 +159,7 @@ const SignInPage = () => {
                                                 </FormItem>
                                             )}
                                         />
-                                        <FormField
-                                            control={form.control}
-                                            name="password"
-                                            render={({field}) => (
-                                                <FormItem>
-                                                    <FormLabel>Password</FormLabel>
-                                                    <FormControl>
-                                                        <div className="flex w-full max-w-sm items-center space-x-2">
-                                                            <Input type={showPassword ? "text" : "password"}
-                                                                   placeholder="password" {...field} />
-                                                            <Button onClick={() => setShowPassword(!showPassword)}
-                                                                    size="icon"
-                                                                    variant="secondary" type="button">
-                                                                {showPassword ? <LuEye size={20}/> :
-                                                                    <LuEyeOff size={20}/>}
-                                                            </Button>
-                                                        </div>
-                                                    </FormControl>
-                                                    <FormDescription>
-                                                    </FormDescription>
-                                                    <FormMessage/>
-                                                </FormItem>
-                                            )}
-                                        />
                                         <Button className="justify-end" type="submit">Submit</Button>
-                                        <Link to="/reset-password" className="text-sm text-right float-end underline underline-offset-1">Forgot password?</Link>
                                     </form>
                                 </Form>
                             </CardContent>
@@ -243,4 +178,4 @@ const SignInPage = () => {
     );
 };
 
-export default SignInPage;
+export default ResetPassword;

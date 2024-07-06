@@ -9,6 +9,9 @@ import DashboardPage from "@/pages/DashboardPage.tsx";
 import TestPage from "@/pages/TestPage.tsx";
 import Error404Page from "@/pages/Error404Page.tsx";
 import React from 'react';
+import ResetPassword from "@/pages/ResetPassword.tsx";
+import PasswordOtpVerification from "@/pages/PasswordOtpVerificationPage.tsx";
+import NewPassword from "@/pages/NewPassword.tsx";
 
 
 const router = createBrowserRouter([
@@ -67,6 +70,21 @@ const router = createBrowserRouter([
     {
         path: "/compose",
         element: <DashboardPage/>,
+        errorElement: <Error404Page/>
+    },
+    {
+        path: "/reset-password",
+        element: <ResetPassword/>,
+        errorElement: <Error404Page/>
+    },
+    {
+        path: "/verify-password-reset",
+        element: <PasswordOtpVerification/>,
+        errorElement: <Error404Page/>
+    },
+    {
+        path: "/new-password",
+        element: <NewPassword/>,
         errorElement: <Error404Page/>
     },
     {
