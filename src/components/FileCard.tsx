@@ -201,6 +201,7 @@ const FileCard = (props: {
                                         </FormItem>
                                     )}
                                 />
+                                {/*TODO add number of emails the file has been sent in || both front end and backend*/}
 
                                 <DialogFooter className="sm:justify-start mt-5">
                                     <Button type="button" onClick={handleEdit} variant="ghost">
