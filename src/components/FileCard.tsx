@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card.tsx";
-import React, { useEffect, useState } from "react";
+import {Card, CardContent, CardHeader} from "@/components/ui/card.tsx";
+import React, {useEffect, useState} from "react";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -7,8 +7,8 @@ import {
     DropdownMenuLabel,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu.tsx";
-import { Loader2, MoreHorizontal } from "lucide-react";
-import { Button } from "@/components/ui/button.tsx";
+import {Loader2, MoreHorizontal} from "lucide-react";
+import {Button} from "@/components/ui/button.tsx";
 import {
     Dialog,
     DialogContent,
@@ -18,22 +18,22 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog.tsx";
-import { Input } from "@/components/ui/input.tsx";
-import { Textarea } from "@/components/ui/textarea.tsx";
-import { z } from "zod";
-import { FormProvider, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form.tsx";
-import { useToast } from "@/components/ui/use-toast.ts";
+import {Input} from "@/components/ui/input.tsx";
+import {Textarea} from "@/components/ui/textarea.tsx";
+import {z} from "zod";
+import {FormProvider, useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form.tsx";
+import {useToast} from "@/components/ui/use-toast.ts";
 import axios from "axios";
-import { BASE_URL } from "@/config.ts";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip.tsx";
-import { truncateWord } from "@/utils/common.ts";
+import {BASE_URL} from "@/config.ts";
+import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip.tsx";
+import {truncateWord} from "@/utils/common.ts";
 import * as clipboard from "clipboard-polyfill";
 
 const formSchema = z.object({
-    title: z.string().min(1, { message: "Title is required!" }),
-    description: z.string().min(1, { message: "Please enter a description!" }),
+    title: z.string().min(1, {message: "Title is required!"}),
+    description: z.string().min(1, {message: "Please enter a description!"}),
 });
 
 const FileCard = (props: {
@@ -44,10 +44,10 @@ const FileCard = (props: {
     fileDescription?: string;
     createdAt: string;
 }) => {
-    const { fileID, fileTitle, fileSize, fileIcon, fileDescription, createdAt } = props;
+    const {fileID, fileTitle, fileSize, fileIcon, fileDescription, createdAt} = props;
 
     const [isDisabled, setIsDisabled] = useState(true);
-    const { toast } = useToast();
+    const {toast} = useToast();
     const newTab = (url: string) => window?.open(url, "_blank")?.focus();
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -58,12 +58,12 @@ const FileCard = (props: {
         },
     });
 
-    const { reset, watch, formState } = form;
-    const { isDirty, dirtyFields } = formState;
+    const {reset, watch, formState} = form;
+    const {isDirty, dirtyFields} = formState;
 
     const [fileCardTitle, setFileCardTitle] = useState(fileTitle);
     useEffect(() => {
-        reset({ title: fileTitle, description: fileDescription || "" });
+        reset({title: fileTitle, description: fileDescription || ""});
         setFileCardTitle(fileTitle);
     }, [fileTitle, fileDescription, reset]);
 
@@ -99,7 +99,7 @@ const FileCard = (props: {
             };
             axiosUpdateInstance.patch(`${BASE_URL}/admin/file/update/${fileID}`, updatedData).then(response => {
                 if (response.status === 200) {
-                    toast({ description: "File updated successfully!" });
+                    toast({description: "File updated successfully!"});
                     setFileCardTitle(updatedData.title);
                 } else {
                     toast({
@@ -110,20 +110,20 @@ const FileCard = (props: {
             })
             setIsDisabled(true);
         } else {
-            toast({ description: "No changes made!" });
+            toast({description: "No changes made!"});
         }
     };
 
     const handleDelete = (fileData: { fileID: string }) => {
         toast({
             description: "Deleting file...",
-            action: <Loader2 className="mr-2 h-4 w-4 animate-spin" />,
+            action: <Loader2 className="mr-2 h-4 w-4 animate-spin"/>,
         })
 
         axiosDeleteInstance.delete(`${BASE_URL}/admin/file/delete/${fileData.fileID}`)
             .then((response) => {
                 if (response.status === 200) {
-                    toast({ description: "File deleted successfully!" });
+                    toast({description: "File deleted successfully!"});
                 } else {
                     toast({
                         description: response.data.error,
@@ -146,7 +146,7 @@ const FileCard = (props: {
     const handleCopyLink = () => {
         const link = `${BASE_URL}/file/download/request/${fileID}`;
         clipboard.writeText(link).then(() => {
-            toast({ description: "Link copied to clipboard!" });
+            toast({description: "Link copied to clipboard!"});
         }).catch(err => {
             toast({
                 description: "Failed to copy link!",
@@ -163,7 +163,7 @@ const FileCard = (props: {
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button aria-haspopup="true" size="icon" variant="ghost">
-                                <MoreHorizontal className="h-4 w-4" />
+                                <MoreHorizontal className="h-4 w-4"/>
                                 <span className="sr-only">Toggle menu</span>
                             </Button>
                         </DropdownMenuTrigger>
@@ -172,7 +172,10 @@ const FileCard = (props: {
                             <DialogTrigger asChild>
                                 <DropdownMenuItem onClick={handleView}>View</DropdownMenuItem>
                             </DialogTrigger>
-                            <DropdownMenuItem onClick={() => handleDelete(props)}>Delete</DropdownMenuItem>
+                            {
+                                sessionStorage.getItem("user_type") === "admin" &&
+                                <DropdownMenuItem onClick={() => handleDelete(props)}>Delete</DropdownMenuItem>
+                            }
                             <DropdownMenuItem onClick={handleDownload}>Download</DropdownMenuItem>
                             <DropdownMenuItem onClick={handleCopyLink}>Copy link</DropdownMenuItem>
                         </DropdownMenuContent>
@@ -181,14 +184,24 @@ const FileCard = (props: {
                         <FormProvider {...form}>
                             <form onSubmit={form.handleSubmit(() => handleSave(fileID))}>
                                 <DialogHeader>
-                                    <DialogTitle>Edit File</DialogTitle>
-                                    <DialogDescription>Edit and update the file.</DialogDescription>
+                                    {
+                                        sessionStorage.getItem("user_type") === "admin" ?
+                                            <>
+                                                <DialogTitle>Edit File</DialogTitle>
+                                                <DialogDescription>Edit and update the file</DialogDescription>
+                                            </> :
+                                            <>
+                                                <DialogTitle>View File</DialogTitle>
+                                                <DialogDescription>View file details</DialogDescription>
+                                            </>
+                                    }
+
                                 </DialogHeader>
 
                                 <FormField
                                     control={form.control}
                                     name="title"
-                                    render={({ field }) => (
+                                    render={({field}) => (
                                         <FormItem>
                                             <FormLabel>Title</FormLabel>
                                             <FormControl>
@@ -196,35 +209,38 @@ const FileCard = (props: {
                                                        disabled={isDisabled} {...field} />
                                             </FormControl>
                                             <FormDescription></FormDescription>
-                                            <FormMessage />
+                                            <FormMessage/>
                                         </FormItem>
                                     )}
                                 />
                                 <FormField
                                     control={form.control}
                                     name="description"
-                                    render={({ field }) => (
+                                    render={({field}) => (
                                         <FormItem>
                                             <FormLabel>Description</FormLabel>
                                             <FormControl>
                                                 <Textarea placeholder="description" disabled={isDisabled}
                                                           rows={4} {...field} />
                                             </FormControl>
-                                            <FormMessage />
+                                            <FormMessage/>
                                         </FormItem>
                                     )}
                                 />
 
-                                <DialogFooter className="sm:justify-start mt-5">
-                                    <Button type="button" onClick={handleEdit} variant="ghost">
-                                        {isDisabled ? "Edit" : "Cancel"}
-                                    </Button>
-                                    {isDirty &&
-                                        (<Button type="submit" className="px-3">
-                                            Save
-                                        </Button>)
-                                    }
-                                </DialogFooter>
+                                {
+                                    sessionStorage.getItem("user_type") === "admin" &&
+                                    <DialogFooter className="sm:justify-start mt-5">
+                                        <Button type="button" onClick={handleEdit} variant="ghost">
+                                            {isDisabled ? "Edit" : "Cancel"}
+                                        </Button>
+                                        {isDirty &&
+                                            (<Button type="submit" className="px-3">
+                                                Save
+                                            </Button>)
+                                        }
+                                    </DialogFooter>
+                                }
                             </form>
                         </FormProvider>
                     </DialogContent>
