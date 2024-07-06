@@ -1,16 +1,16 @@
-import { Button } from "@/components/ui/button.tsx";
-import { Loader2, MoreHorizontal, Search } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card.tsx";
-import { Input } from "@/components/ui/input.tsx";
-import React, { useEffect, useState } from "react";
-import { BiMailSend } from "react-icons/bi";
-import { Skeleton } from "@/components/ui/skeleton.tsx";
+import {Button} from "@/components/ui/button.tsx";
+import {Loader2, MoreHorizontal, Search} from "lucide-react";
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.tsx";
+import {Input} from "@/components/ui/input.tsx";
+import React, {useEffect, useState} from "react";
+import {BiMailSend} from "react-icons/bi";
+import {Skeleton} from "@/components/ui/skeleton.tsx";
 import axios from "axios";
-import { BASE_URL } from "@/config.ts";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { AvatarImage } from "@/components/ui/avatar.tsx";
-import { truncateWord } from "@/utils/common.ts";
+import {BASE_URL} from "@/config.ts";
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table"
+import {Avatar, AvatarFallback} from "@/components/ui/avatar";
+import {AvatarImage} from "@/components/ui/avatar.tsx";
+import {truncateWord} from "@/utils/common.ts";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -18,12 +18,12 @@ import {
     DropdownMenuLabel,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu.tsx";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { DialogTrigger } from "@/components/ui/dialog.tsx";
+import {Dialog, DialogContent} from "@/components/ui/dialog";
+import {DialogTrigger} from "@/components/ui/dialog.tsx";
 import DOMPurify from "dompurify";
-import { toast } from "@/components/ui/use-toast.ts";
+import {toast} from "@/components/ui/use-toast.ts";
 
-const EmailsSheet: React.FC<{ navigateTo: (page: string) => void }> = ({ navigateTo }) => {
+const EmailsSheet: React.FC<{ navigateTo: (page: string) => void }> = ({navigateTo}) => {
 
     const [searchTerm, setSearchTerm] = useState("");
     const [loadedEmails, setLoadedEmails] = useState(false);
@@ -49,7 +49,7 @@ const EmailsSheet: React.FC<{ navigateTo: (page: string) => void }> = ({ navigat
 
     const fetchData = async () => {
         try {
-            const response = await axiosInstance.get(`${BASE_URL}/admin/emails`);
+            const response = await axiosInstance.get(`${BASE_URL}/${sessionStorage.getItem("user_type")}/emails`);
             setEmails(response.data.data);
             setLoadedEmails(true);
         } catch (error) {
@@ -75,7 +75,7 @@ const EmailsSheet: React.FC<{ navigateTo: (page: string) => void }> = ({ navigat
     const handleDelete = (id: string) => {
         toast({
             title: "Deleting email....",
-            action: <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            action: <Loader2 className="mr-2 h-4 w-4 animate-spin"/>
         });
         axiosDeleteInstance
             .delete(`${BASE_URL}/admin/email/delete/${id}`)
@@ -95,7 +95,7 @@ const EmailsSheet: React.FC<{ navigateTo: (page: string) => void }> = ({ navigat
             });
     };
 
-    const filteredEmails = emails.filter((email: { recipient: string; subject: string }) =>
+    const filteredEmails = emails?.filter((email: { recipient: string; subject: string }) =>
         email.recipient.toLowerCase().includes(searchTerm.toLowerCase()) ||
         email.subject.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -105,7 +105,7 @@ const EmailsSheet: React.FC<{ navigateTo: (page: string) => void }> = ({ navigat
             <div className="flex items-center">
                 <div className="ml-auto flex items-center gap-2">
                     <Button size="sm" className="h-7 gap-1" onClick={() => navigateTo("compose")}>
-                        <BiMailSend className="h-5 w-5" />
+                        <BiMailSend className="h-5 w-5"/>
                         <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                             Send Emails
                         </span>
@@ -118,7 +118,7 @@ const EmailsSheet: React.FC<{ navigateTo: (page: string) => void }> = ({ navigat
                     <CardDescription className="justify-between items-center flex gap-2">
                         Manage and view your emails here.
                         <div className="relative ml-auto flex-1 md:grow-0">
-                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"/>
                             <Input
                                 type="search"
                                 placeholder="Search..."
@@ -147,7 +147,7 @@ const EmailsSheet: React.FC<{ navigateTo: (page: string) => void }> = ({ navigat
                         </TableHeader>
                         <TableBody>
                             {loadedEmails ? (
-                                filteredEmails.length > 0 ? (
+                                filteredEmails?.length > 0 ? (
                                     filteredEmails.map((row: {
                                         _id: string,
                                         subject: string,
@@ -162,7 +162,7 @@ const EmailsSheet: React.FC<{ navigateTo: (page: string) => void }> = ({ navigat
                                             <TableRow key={row._id} className="cursor-pointer">
                                                 <TableCell className="hidden sm:table-cell w-[1%]">
                                                     <Avatar className="h-9 w-9">
-                                                        <AvatarImage src="/avatars/01.png" alt="Avatar" />
+                                                        <AvatarImage src="/avatars/01.png" alt="Avatar"/>
                                                         <AvatarFallback>{
                                                             row.sentByUser?.fullname.slice(0, 2).toUpperCase() ||
                                                             row.sentByAdmin?.fullname.slice(0, 2).toUpperCase()
@@ -193,7 +193,7 @@ const EmailsSheet: React.FC<{ navigateTo: (page: string) => void }> = ({ navigat
                                                             <DropdownMenuTrigger asChild>
                                                                 <Button aria-haspopup="true" size="icon"
                                                                         variant="ghost">
-                                                                    <MoreHorizontal className="h-4 w-4" />
+                                                                    <MoreHorizontal className="h-4 w-4"/>
                                                                     <span className="sr-only">Toggle menu</span>
                                                                 </Button>
                                                             </DropdownMenuTrigger>
@@ -213,7 +213,7 @@ const EmailsSheet: React.FC<{ navigateTo: (page: string) => void }> = ({ navigat
                                                                 <p className="text-sm text-muted-foreground">{row.recipient}</p>
                                                             </p>
                                                             <p className="mt-2"
-                                                               dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(row.content) }}>
+                                                               dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(row.content)}}>
 
                                                             </p>
                                                         </DialogContent>
@@ -240,7 +240,7 @@ const EmailsSheet: React.FC<{ navigateTo: (page: string) => void }> = ({ navigat
                                         <TableRow className="w-full">
                                             <TableCell colSpan={6} className="text-center">
                                                 <div className="flex flex-col justify-center items-center gap-4">
-                                                    <img src="/inbox.png" className="w-56" alt="inbox" />
+                                                    <img src="/inbox.png" className="w-56" alt="inbox"/>
                                                     <p className="text-center text-lg">No Emails!</p>
                                                 </div>
                                             </TableCell>
@@ -250,12 +250,12 @@ const EmailsSheet: React.FC<{ navigateTo: (page: string) => void }> = ({ navigat
                             ) : (
                                 [...Array(5)].map((_, index) => (
                                         <TableRow key={index}>
-                                            <TableCell><Skeleton className="h-9 w-9 rounded-full" /></TableCell>
-                                            <TableCell> <Skeleton className="h-5 w-[100px]" /></TableCell>
-                                            <TableCell><Skeleton className="h-5 w-[150px]" /></TableCell>
-                                            <TableCell><Skeleton className="h-5 w-[150px]" /></TableCell>
-                                            <TableCell><Skeleton className="h-5 w-[150px]" /></TableCell>
-                                            <TableCell><Skeleton className="h-6 w-[25px]" /></TableCell>
+                                            <TableCell><Skeleton className="h-9 w-9 rounded-full"/></TableCell>
+                                            <TableCell> <Skeleton className="h-5 w-[100px]"/></TableCell>
+                                            <TableCell><Skeleton className="h-5 w-[150px]"/></TableCell>
+                                            <TableCell><Skeleton className="h-5 w-[150px]"/></TableCell>
+                                            <TableCell><Skeleton className="h-5 w-[150px]"/></TableCell>
+                                            <TableCell><Skeleton className="h-6 w-[25px]"/></TableCell>
                                         </TableRow>
                                     )
                                 )

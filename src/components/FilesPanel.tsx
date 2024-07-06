@@ -36,7 +36,7 @@ const FilesPanel: React.FC<{ navigateTo: (page: string) => void, addFile: (id: s
             });
 
             try {
-                const response = await axiosInstance.get(`${BASE_URL}/admin/files`);
+                const response = await axiosInstance.get(`${BASE_URL}/${sessionStorage.getItem("user_type")}/files`);
                 setFiles(response.data.data);
                 setIsFilesLoaded(true);
             } catch (error) {
@@ -96,7 +96,7 @@ const FilesPanel: React.FC<{ navigateTo: (page: string) => void, addFile: (id: s
         return sortedFiles;
     };
 
-    const filteredFiles = sortFiles(files.filter(applyFilters));
+    const filteredFiles = sortFiles(files?.filter(applyFilters));
 
     return (
         <>
@@ -147,12 +147,15 @@ const FilesPanel: React.FC<{ navigateTo: (page: string) => void, addFile: (id: s
                                         </DropdownMenuRadioGroup>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
-                                <Button size="sm" className="h-7 gap-1" onClick={() => navigateTo("upload")}>
-                                    <Plus className="h-3.5 w-3.5"/>
-                                    <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                                        Upload File
-                                    </span>
-                                </Button>
+                                {
+                                    sessionStorage.getItem("user_type") === "admin" &&
+                                    <Button size="sm" className="h-7 gap-1" onClick={() => navigateTo("upload")}>
+                                        <Plus className="h-3.5 w-3.5"/>
+                                        <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                            Upload File
+                        </span>
+                                    </Button>
+                                }
                             </div>
                         </div>
                     </CardDescription>
@@ -160,7 +163,7 @@ const FilesPanel: React.FC<{ navigateTo: (page: string) => void, addFile: (id: s
                 <CardContent className="overflow-auto h-[210px]">
                     <div className="grid gap-4 grid-cols-2">
                         {isFilesLoaded ? (
-                            filteredFiles.length > 0 ? (
+                            filteredFiles?.length > 0 ? (
                                 filteredFiles.map((file: {
                                     _id: string,
                                     title: string,

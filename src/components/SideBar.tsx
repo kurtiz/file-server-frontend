@@ -1,4 +1,4 @@
-import {Home, LineChart, Settings, Users2} from "lucide-react";
+import {Home, Settings} from "lucide-react";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip.tsx";
 import {useEffect, useState} from "react";
 import {Link, useLocation} from "react-router-dom";
@@ -8,6 +8,7 @@ import {MdOutlineEmail} from "react-icons/md";
 const SideBar = (props: { handleActiveItem?: (itemId: string) => void }) => {
     const [activeItemId, setActiveItemId] = useState<string | null>("dashboard");
     const location = useLocation();
+    const userType = sessionStorage.getItem("user_type");
 
     useEffect(() => {
         setActiveItemId(location.pathname.substring(1));
@@ -26,24 +27,26 @@ const SideBar = (props: { handleActiveItem?: (itemId: string) => void }) => {
                     className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full border-4 border-primary-foreground bg-primary-foreground
                     text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
                 >
-                    <img src="/icon.png" width="36"/>
+                    <img src="/icon.png" className="w-36" alt="File Server"/>
                     <span className="sr-only">File Server</span>
                 </Link>
                 <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Link
-                                to="/dashboard" onClick={() => handleClick("dashboard")}
-                                className={`flex h-9 w-9 items-center justify-center rounded-lg  ${
-                                    activeItemId === 'dashboard' ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'
-                                } transition-colors hover:text-foreground md:h-8 md:w-8`}
-                            >
-                                <Home className="h-5 w-5"/>
-                                <span className="sr-only">Dashboard</span>
-                            </Link>
-                        </TooltipTrigger>
-                        <TooltipContent side="right">Dashboard</TooltipContent>
-                    </Tooltip>
+                    {userType === "admin" && (
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Link
+                                    to="/dashboard" onClick={() => handleClick("dashboard")}
+                                    className={`flex h-9 w-9 items-center justify-center rounded-lg  ${
+                                        activeItemId === 'dashboard' ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'
+                                    } transition-colors hover:text-foreground md:h-8 md:w-8`}
+                                >
+                                    <Home className="h-5 w-5"/>
+                                    <span className="sr-only">Dashboard</span>
+                                </Link>
+                            </TooltipTrigger>
+                            <TooltipContent side="right">Dashboard</TooltipContent>
+                        </Tooltip>
+                    )}
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Link
@@ -71,33 +74,6 @@ const SideBar = (props: { handleActiveItem?: (itemId: string) => void }) => {
                             </Link>
                         </TooltipTrigger>
                         <TooltipContent side="right">Emails</TooltipContent>
-                    </Tooltip>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Link
-                                to="/customers" onClick={() => handleClick("customers")}
-                                className={`flex h-9 w-9 items-center justify-center rounded-lg  ${
-                                    activeItemId === 'customers' ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'
-                                } transition-colors hover:text-foreground md:h-8 md:w-8`}
-                            >
-                                <Users2 className="h-5 w-5"/>
-                                <span className="sr-only">Customers</span>
-                            </Link>
-                        </TooltipTrigger>
-                        <TooltipContent side="right">Customers</TooltipContent>
-                    </Tooltip>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Link to="/analytics" onClick={() => handleClick("analytics")}
-                                  className={`flex h-9 w-9 items-center justify-center rounded-lg  ${
-                                      activeItemId === 'analytics' ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'
-                                  } transition-colors hover:text-foreground md:h-8 md:w-8`}
-                            >
-                                <LineChart className="h-5 w-5"/>
-                                <span className="sr-only">Analytics</span>
-                            </Link>
-                        </TooltipTrigger>
-                        <TooltipContent side="right">Analytics</TooltipContent>
                     </Tooltip>
                 </TooltipProvider>
             </nav>

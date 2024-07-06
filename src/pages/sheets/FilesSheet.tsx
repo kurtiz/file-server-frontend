@@ -36,7 +36,7 @@ const FilesSheet: React.FC<{ navigateTo: (page: string) => void }> = ({navigateT
             });
 
             try {
-                const response = await axiosInstance.get(`${BASE_URL}/admin/files`);
+                const response = await axiosInstance.get(`${BASE_URL}/${sessionStorage.getItem("user_type")}/files`);
                 setFiles(response.data.data);
                 setIsFilesLoaded(true);
             } catch (error) {
@@ -58,7 +58,7 @@ const FilesSheet: React.FC<{ navigateTo: (page: string) => void }> = ({navigateT
         }
     };
 
-    const applyFilters = (file: {title: string, fileSize: string, createdAt: string}) => {
+    const applyFilters = (file: { title: string, fileSize: string, createdAt: string }) => {
         return file.title.toLowerCase().includes(searchTerm.toLowerCase());
     };
 
@@ -96,7 +96,7 @@ const FilesSheet: React.FC<{ navigateTo: (page: string) => void }> = ({navigateT
         return sortedFiles;
     };
 
-    const filteredFiles = sortFiles(files.filter(applyFilters));
+    const filteredFiles = sortFiles(files?.filter(applyFilters));
 
     return (
         <>
@@ -115,24 +115,29 @@ const FilesSheet: React.FC<{ navigateTo: (page: string) => void }> = ({navigateT
                             <DropdownMenuLabel>Filter by</DropdownMenuLabel>
                             <DropdownMenuSeparator/>
                             <DropdownMenuLabel>Size</DropdownMenuLabel>
-                            <DropdownMenuRadioGroup value={sizeFilter} onValueChange={(value) => handleFilterClick("size", value as "asc" | "desc")}>
+                            <DropdownMenuRadioGroup value={sizeFilter}
+                                                    onValueChange={(value) => handleFilterClick("size", value as "asc" | "desc")}>
                                 <DropdownMenuRadioItem value="asc">Ascending</DropdownMenuRadioItem>
                                 <DropdownMenuRadioItem value="desc">Descending</DropdownMenuRadioItem>
                             </DropdownMenuRadioGroup>
                             <DropdownMenuSeparator/>
                             <DropdownMenuLabel>Date</DropdownMenuLabel>
-                            <DropdownMenuRadioGroup value={dateFilter} onValueChange={(value) => handleFilterClick("date", value as "asc" | "desc")}>
+                            <DropdownMenuRadioGroup value={dateFilter}
+                                                    onValueChange={(value) => handleFilterClick("date", value as "asc" | "desc")}>
                                 <DropdownMenuRadioItem value="asc">Ascending</DropdownMenuRadioItem>
                                 <DropdownMenuRadioItem value="desc">Descending</DropdownMenuRadioItem>
                             </DropdownMenuRadioGroup>
                         </DropdownMenuContent>
                     </DropdownMenu>
-                    <Button size="sm" className="h-7 gap-1" onClick={() => navigateTo("upload")}>
-                        <Plus className="h-3.5 w-3.5"/>
-                        <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                    {
+                        sessionStorage.getItem("user_type") === "admin" &&
+                        <Button size="sm" className="h-7 gap-1" onClick={() => navigateTo("upload")}>
+                            <Plus className="h-3.5 w-3.5"/>
+                            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                             Upload File
                         </span>
-                    </Button>
+                        </Button>
+                    }
                 </div>
             </div>
             <Card x-chunk="dashboard-06-chunk-0">
@@ -155,7 +160,7 @@ const FilesSheet: React.FC<{ navigateTo: (page: string) => void }> = ({navigateT
                 <CardContent className="overflow-auto h-[400px]">
                     <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-5">
                         {isFilesLoaded ? (
-                            filteredFiles.length > 0 ? (
+                            filteredFiles?.length > 0 ? (
                                 filteredFiles.map((file: {
                                     _id: string,
                                     title: string,

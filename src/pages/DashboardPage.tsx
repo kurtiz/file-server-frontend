@@ -36,21 +36,21 @@ const DashboardPage: React.FC = () => {
     const getContent = useCallback(() => {
         switch (activeItemId) {
             case 'dashboard':
-                return <DashboardSheet navigateTo={navigateTo}/>;
+                return (sessionStorage.getItem("user_type") === "admin") ?
+                    <DashboardSheet navigateTo={navigateTo}/> :
+                    <FilesSheet navigateTo={navigateTo}/>;
             case 'files':
                 return <FilesSheet navigateTo={navigateTo}/>;
             case 'emails':
                 return <EmailsSheet navigateTo={navigateTo}/>;
             case 'upload':
-                return <UploadSheet navigateTo={navigateTo}/>;
+                return (sessionStorage.getItem("user_type") === "admin") ?
+                    <UploadSheet navigateTo={navigateTo}/> :
+                    <FilesSheet navigateTo={navigateTo}/>;
             case 'compose':
                 return <ComposeEmailSheet navigateTo={navigateTo}/>;
-            case 'analytics':
-                return <p>Analytics content will be displayed here</p>;
             case 'settings':
                 return <p>Settings content will be displayed here</p>;
-            case 'profile':
-                return <p>Profile content will be displayed here</p>;
             default:
                 return <p>Invalid content</p>;
         }

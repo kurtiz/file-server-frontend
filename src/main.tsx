@@ -38,27 +38,12 @@ const router = createBrowserRouter([
         errorElement: <Error404Page/>
     },
     {
-        path: "/customers",
-        element: <DashboardPage/>,
-        errorElement: <Error404Page/>
-    },
-    {
         path: "/emails",
         element: <DashboardPage/>,
         errorElement: <Error404Page/>
     },
     {
-        path: "/analytics",
-        element: <DashboardPage/>,
-        errorElement: <Error404Page/>
-    },
-    {
         path: "/settings",
-        element: <DashboardPage/>,
-        errorElement: <Error404Page/>
-    },
-    {
-        path: "/profile",
         element: <DashboardPage/>,
         errorElement: <Error404Page/>
     },
